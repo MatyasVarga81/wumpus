@@ -34,7 +34,7 @@ public class WumpusGameLoader {
             Direction heroDirection = Direction.valueOf(firstLine[3]);
 
             this.board = new char[size][size];
-            this.hero = new Hero(heroCol, heroRow, heroDirection, board);
+        //    this.hero = new Hero(col, row, direction);
 
             // Pálya inicializálása
             initializeBoard(br, size);

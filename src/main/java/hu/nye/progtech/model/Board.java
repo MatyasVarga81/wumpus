@@ -15,19 +15,19 @@ public class Board {
         this.hero = hero;
     }
 
-    public Board(Scanner fileScanner) {
-        this.cells = null;
-        this.hero = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(fileScanner.nextLine())))) {
+
+
+    public Board(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(filePath)))) {
             // Pálya mérete és kezdeti állapota
             String[] firstLine = br.readLine().split(" ");
             int size = Integer.parseInt(firstLine[0]);
-            int heroCol = Integer.parseInt(firstLine[1]);
-            int heroRow = Integer.parseInt(firstLine[2]);
-            Direction heroDirection = Direction.valueOf(firstLine[3]);
+            int col = Integer.parseInt(firstLine[1]);
+            int row = Integer.parseInt(firstLine[2]);
+            Direction direction = Direction.valueOf(firstLine[3].trim().toUpperCase());
 
             this.cells = new CellType[size][size];
-            this.hero = new Hero(heroCol, heroRow, heroDirection);
+            this.hero = new Hero(col, row, direction);
 
             // Pálya inicializálása
             initializeBoard(br, size);
@@ -39,51 +39,87 @@ public class Board {
         }
     }
 
-   // public Board(Scanner fileScanner, Object o, Object hero) {
-   // }
+    // public Board(Scanner fileScanner, Object o, Object hero) {
+    // }
 
     private void initializeBoard(BufferedReader br, int size) throws IOException {
         for (int i = 0; i < size; i++) {
             String rowString = br.readLine();
             for (int j = 0; j < size; j++) {
                 char cellChar = rowString.charAt(j);
+                CellType cellType;
+
                 switch (cellChar) {
                     case 'W':
-                        cells[i][j] = CellType.WALL;
+                        cellType = CellType.WALL;
                         break;
                     case 'H':
-                        cells[i][j] = CellType.HERO;
+                        cellType = CellType.HERO;
                         break;
                     case 'U':
-                        cells[i][j] = CellType.WUMPUS;
+                        cellType = CellType.WUMPUS;
                         break;
                     case 'P':
-                        cells[i][j] = CellType.PIT;
+                        cellType = CellType.PIT;
                         break;
                     case 'G':
-                        cells[i][j] = CellType.GOLD;
+                        cellType = CellType.GOLD;
                         break;
                     case '-':
-                        cells[i][j] = CellType.EMPTY;
+                        cellType = CellType.EMPTY;
+                        break;
+                    default:
+                        cellType = CellType.EMPTY; // Alapértelmezett érték, ha nem ismerjük fel a karaktert
                         break;
                 }
+
+                cells[i][j] = cellType;
             }
         }
     }
 
-  private void placeHeroOnBoard() {
+
+
+    private void placeHeroOnBoard() {
 
         cells[hero.getCol()][hero.getRow()] = CellType.HERO;
-   }
+    }
 
     public void printBoard() {
-        // Implementáld a pálya kiírását a konzolra
-        // Az itt csak egy példa, a te feladatod megvalósítani a pálya megfelelő kiírását
+        // Pálya megjelenítése a konzolon
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
-                System.out.print(cells[i][j] + " ");
+                char cellSymbol = getCellSymbol(cells[i][j]);
+                System.out.print(cellSymbol + " ");
             }
             System.out.println();
         }
     }
+
+    private char getCellSymbol(CellType cellType) {
+        // Az egyes cellatípusokhoz tartozó karakterek visszaadása
+        switch (cellType) {
+            case WALL:
+                return 'W';
+            case HERO:
+                return 'H';
+            case WUMPUS:
+                return 'U';
+            case PIT:
+                return 'P';
+            case GOLD:
+                return 'G';
+            case EMPTY:
+                return '-';
+            default:
+                return '?'; // Ismeretlen cellatípus esetén '?' karaktert használjunk
+        }
+    }
+
+
+    public Object getHero() {
+
+        return null;
+    }
 }
+

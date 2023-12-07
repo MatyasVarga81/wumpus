@@ -9,27 +9,12 @@ public class Hero {
 
         private CellType[][] board;
 
-        public Hero(int row, int col, Direction direction, int arrows, CellType[][] board) {
-            this.row = row;
-            this.col = col;
-            this.direction = direction;
-            this.arrows = arrows;
-            this.board = board;
-        }
-
-        public Hero(int heroCol, int heroRow, Direction heroDirection, CellType[][] board) {
-            this.col = heroCol;
-            this.row = heroRow;
-            this.direction = heroDirection;
-            this.board = board;
-        }
-
-    public Hero(int heroCol, int heroRow, Direction heroDirection) {
+    public Hero(int col, int row, Direction direction/* CellType[][] board*/) {
+        this.col = col;
+        this.row = row;
+        this.direction = direction;
+        this.board = board;
     }
-
-    public Hero(int heroCol, int heroRow, Direction heroDirection, char[][] board) {
-    }
-
 
     public void move() {
         switch (direction) {

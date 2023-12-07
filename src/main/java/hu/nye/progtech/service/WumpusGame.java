@@ -1,39 +1,32 @@
 package hu.nye.progtech.service;
 
 import hu.nye.progtech.model.Board;
-
+import hu.nye.progtech.model.CellType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+
 public class WumpusGame {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-     //   System.out.print("Kérlek, add meg a fájl nevét: ");
-     //   String fileName = scanner.nextLine();
+        public static void main (String[]args){
+            try {
+                Board board = new Board("C:\\Users\\varga\\progTech\\wumpus\\src\\main\\resources\\wumpusinput");
 
-        // Fájlból beolvasás
-        try {
-            Scanner fileScanner = new Scanner(new File("C:\\Users\\varga\\progTech\\wumpusAI\\src\\main\\resources\\wumpusinput"));
+                // Pálya kiírása a konzolra
+      //          board.printBoard();
 
-            Object CellType = null;
-            Object Hero = null;
-            Board board = new Board(fileScanner);
+                // Játék inicializálása
+                hu.nye.progtech.service.Game game = new hu.nye.progtech.service.Game(board);
 
-            // Pálya kiírása a konzolra
-            board.printBoard();
-
-            // Játék inicializálása
-            hu.nye.progtech.service.Game game = new hu.nye.progtech.service.Game(board);
-
-            // Játék elindítása
-            game.play();
-
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Hiba a fájl olvasása közben: " + e.getMessage());
+                // Játék elindítása
+                game.play();
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
         }
     }
-}
+
+
+
