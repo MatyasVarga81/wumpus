@@ -11,16 +11,17 @@ import java.util.Scanner;
 public class WumpusGame {
 
         public static void main (String[]args){
-            try {
+            System.out.println("Üdvözöllek dicső lovag! Szép a ruhád, szép a lovad");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Mond, hogyan szólíthatlak: ");
+            String userName = scanner.nextLine();
+            System.out.println("Felhasználónév: " + userName);
+              try {
                 Board board = new Board("C:\\Users\\varga\\progTech\\wumpus\\src\\main\\resources\\wumpusinput");
 
-                // Pálya kiírása a konzolra
-      //          board.printBoard();
-
-                // Játék inicializálása
                 hu.nye.progtech.service.Game game = new hu.nye.progtech.service.Game(board);
 
-                // Játék elindítása
                 game.play();
             } catch (Exception e) {
                 System.out.println("An error occurred: " + e.getMessage());

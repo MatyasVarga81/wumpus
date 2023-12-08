@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Board {
-    private CellType[][] cells;
+    CellType[][] cells;
     private Hero hero;
 
     public Board(CellType[][] cells, Hero hero) {
@@ -42,7 +42,7 @@ public class Board {
     // public Board(Scanner fileScanner, Object o, Object hero) {
     // }
 
-    private void initializeBoard(BufferedReader br, int size) throws IOException {
+    void initializeBoard(BufferedReader br, int size) throws IOException {
         for (int i = 0; i < size; i++) {
             String rowString = br.readLine();
             for (int j = 0; j < size; j++) {
@@ -120,6 +120,12 @@ public class Board {
     public Object getHero() {
 
         return null;
+    }
+
+    public void removeHero() {
+    }
+
+    public void placeHero(int newRow, int newCol) {
     }
 }
 

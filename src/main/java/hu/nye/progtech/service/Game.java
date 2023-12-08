@@ -4,10 +4,12 @@ import hu.nye.progtech.model.Board;
 import hu.nye.progtech.model.CellType;
 import hu.nye.progtech.model.Direction;
 import hu.nye.progtech.model.Hero;
-
-
 import java.util.Scanner;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import static hu.nye.progtech.model.Direction.*;
 
 public class Game {
     private Board board;
@@ -17,10 +19,7 @@ public class Game {
     }
     private void loadFromFile() {
         board.printBoard();
-
-
     }
-
     public void play() {
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -29,7 +28,7 @@ public class Game {
             printMenu();
             System.out.print("Choose an option: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consuming the newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -39,10 +38,10 @@ public class Game {
                     loadFromFile();
                     break;
                 case 3:
-                    // Implement load from database
+                    loadFromDatabase();
                     break;
                 case 4:
-                    // Implement save to database
+                    savetoDatabase();
                     break;
                 case 5:
                     playGame();
@@ -56,6 +55,40 @@ public class Game {
 
         } while (choice != 6);
     }
+
+    private void savetoDatabase() {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            String sql = "INSERT INTO game_state (col, row, direction) VALUES (?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, hero.getCol());
+                statement.setInt(2, hero.getRow());
+                statement.setString(3, hero.getDirection().toString());
+                statement.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }}
+
+    private void loadFromDatabase() {
+        try (Connection connection = DriverManager.getConnection(url)) {
+        String sql = "SELECT * FROM game_state ORDER BY id DESC LIMIT 1";
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                int col = resultSet.getInt("col");
+                int row = resultSet.getInt("row");
+                Direction direction = Direction.valueOf(resultSet.getString("direction"));
+
+                hero = new Hero(col, row, direction);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    }
+
+    private final String url = "jdbc:sqlite:game_database.db";
+
 
     private void printMenu() {
         System.out.println("===== Game Menu =====");
@@ -75,43 +108,43 @@ public class Game {
 
         System.out.print("Adja meg a pálya méretét (NxN): ");
         int size = scanner.nextInt();
-        scanner.nextLine(); // consume the newline character
+        scanner.nextLine();
 
         System.out.print("Adja meg a hős oszlopát: ");
         int col = scanner.nextInt();
-        scanner.nextLine(); // consume the newline character
+        scanner.nextLine();
 
         System.out.print("Adja meg a hős sorát: ");
         int row = scanner.nextInt();
-        scanner.nextLine(); // consume the newline character
+        scanner.nextLine();
 
         System.out.print("Adja meg a hős irányát (NORTH/WEST/SOUTH/EAST): ");
         Direction direction = Direction.valueOf(scanner.nextLine().toUpperCase());
 
-        // TODO: Implementáld a további bekéréseket a pálya elemeire
-
-        CellType[][] cells = new CellType[size][size];
+                CellType[][] cells = new CellType[size][size];
         this.hero = new Hero(col, row, direction);
         this.board = new Board(cells, this.hero);
     }
 
 
-    private Hero hero; // Declare the hero at the class level
+    private Hero hero;
 
     private void playGame() {
-        Scanner scanner = new Scanner(System.in);
 
+        Scanner scanner = new Scanner(System.in);
+        hero = new Hero(5, 2, EAST);
         while (true) {
             board.printBoard();
 
-            System.out.println("Choose an action:");
+
             System.out.println("1. Move");
             System.out.println("2. Shoot");
             System.out.println("3. Pickup Gold");
             System.out.println("4. Quit");
+            System.out.println("Choose an action:");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -125,19 +158,31 @@ public class Game {
                     break;
                 case 4:
                     System.out.println("Quitting the game. Goodbye!");
-                    return; // Exit the method and end the game loop
+                    return;
                 default:
                     System.out.println("Invalid choice. Please choose again.");
-                    continue; // Skip the rest of the loop and start a new iteration
+                    continue;
             }
-
-            // Additional game logic based on the current state of the board, hero, etc.
-
-            // Check if the hero reached the exit, defeated the Wumpus, etc.
-            // Update the game state accordingly
-
-            // Optionally, add a win/lose condition and break out of the loop
-            // based on your game's logic.
         }
     }
+    private int getNewRow() {
+        Hero hero = (Hero) board.getHero();
+        int newRow = hero.getRow();
+        switch (Direction) {
+            case NORTH -> newRow--;
+            case SOUTH -> newRow++;
+        }
+        return newRow;
+    }
+
+    private int getNewCol() {
+        Hero hero = (Hero) board.getHero();
+        int newCol = hero.getCol();
+        switch (Direction) {
+            case EAST -> newCol++;
+            case WEST -> newCol--;
+        }
+        return newCol;
+    }
+
 }

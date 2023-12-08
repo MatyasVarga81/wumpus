@@ -7,7 +7,7 @@ public class Hero {
     private int arrows;
 
 
-        private CellType[][] board;
+    private CellType[][] board;
 
     public Hero(int col, int row, Direction direction/* CellType[][] board*/) {
         this.col = col;
@@ -93,10 +93,22 @@ public class Hero {
 
 
     public int getCol() {
-    return col;
-        }
+        return col;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getArrows() {
+        return arrows;
+    }
+
+    public CellType[][] getBoard() {
+        return board;
+    }
 
     public int getRow() {
-    return row;
-        }
+        return row;
+    }
 }
